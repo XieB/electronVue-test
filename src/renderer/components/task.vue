@@ -11,10 +11,31 @@
             </li>
         </ul>
         <input type="text" placeholder="按enter键加入任务列表" @keyup.enter="addTask" v-model="inputValue.name" class="add_task">
+
+        <div class="test">
+            <button @click="ipcRemote">ipcRemote</button>
+            <br />
+            <button @click="showMessage">消息弹窗？</button>
+            <br />
+            <button @click="getBaiduIP">原生node获取ip地址</button>
+        </div>
     </div>
 </template>
 
 <script>
+
+    //弹窗
+    const {dialog} = require('electron').remote;
+
+    //主进程通讯
+    const {ipcRenderer} = require('electron')
+    ipcRenderer.on('replaymsg', (evt, otherData) => {
+        console.log(otherData)
+    })
+
+    //原生node
+    const dns = require('dns');
+
     export default {
         name: "task",
         data(){
@@ -35,6 +56,19 @@
             },
             delTask(index){
                 this.taskList.splice(index,1);
+            },
+            ipcRemote(){
+                this.$electron.ipcRenderer.send('testMessage','this sis a test message');
+            },
+            getBaiduIP(){
+                dns.lookup('www.baidu.com', (err, address, family) => {
+                    console.log('IP 地址: %s 地址族: IPv%s', address, family);
+                });
+            },
+            showMessage(){
+                dialog.showMessageBox({
+                    message : '中文',
+                });
             }
         }
     }
@@ -77,6 +111,12 @@
         border: 1px solid #999;
         &:focus{
             border-color: lightseagreen;
+        }
+    }
+    .test{
+        text-align: center;
+        button{
+            margin-top: 20px;
         }
     }
 }

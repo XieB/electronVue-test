@@ -26,15 +26,16 @@ function createWindow() {
     // let offsetRight = width - (260 + 0);
 
     mainWindow = new BrowserWindow({
-        height: 350,
+        // height: 350,
         useContentSize: true,
-        width: 260,
+        // width: 260,
         // x : offsetRight,
         // y : 100,
         frame: false,    //隐藏外部窗体
         resizable : false,
         maximizable : false,
         // opacity : 0.8,
+        // alwaysOnTop : true,
     })
     Menu.setApplicationMenu(null);  //隐藏菜单
 
@@ -93,4 +94,10 @@ ipcMain.on('max',()=>{
     } else {
         mainWindow.maximize()
     }
+})
+
+
+ipcMain.on('testMessage',(event,data)=>{
+    console.log(data);
+    event.sender.send('replaymsg', 'i have accept this message');
 })
